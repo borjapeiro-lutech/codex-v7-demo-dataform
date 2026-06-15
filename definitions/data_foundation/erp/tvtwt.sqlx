@@ -1,0 +1,38 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "tvtwt",
+  tags: ["sap", "common", "configuration", "yearly"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "mandt",
+  "spras",
+  "vtweg"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "vtweg",
+  "vtext",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Organizational Unit: Distribution Channels: Texts",
+  column_descriptions: {
+  "mandt": "Client (Mandant)",
+  "spras": "Language Key",
+  "vtext": "Name",
+  "vtweg": "Distribution Channel"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "tvtwt")
+})}

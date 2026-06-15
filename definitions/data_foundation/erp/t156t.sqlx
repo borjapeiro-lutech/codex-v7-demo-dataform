@@ -1,0 +1,52 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "t156t",
+  tags: ["sap", "common", "configuration", "once"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "bwart",
+  "mandt",
+  "spras",
+  "kzvbr",
+  "kzbew",
+  "kzzug",
+  "sobkz"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "bwart",
+  "sobkz",
+  "kzbew",
+  "kzzug",
+  "kzvbr",
+  "btext",
+  "btext_esh",
+  "btext_l",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Movement Type Text",
+  column_descriptions: {
+  "btext": "Movement Type Text",
+  "bwart": "Movement type",
+  "kzbew": "Movement indicator",
+  "kzvbr": "Consumption",
+  "kzzug": "Receipt Indicator",
+  "mandt": "Client (Mandant)",
+  "sobkz": "Special Stock",
+  "spras": "Language Key"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "t156t")
+})}

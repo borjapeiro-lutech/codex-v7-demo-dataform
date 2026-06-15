@@ -1,0 +1,31 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "tcurx",
+  tags: ["sap", "common", "configuration", "currency", "daily"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "currkey"
+],
+  columns: [
+  "currkey",
+  "currdec",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Decimal Places in Currencies",
+  column_descriptions: {
+  "currdec": "Decimals"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "tcurx")
+})}

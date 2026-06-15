@@ -1,0 +1,40 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "t023t",
+  tags: ["sap", "common", "configuration", "once"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "matkl",
+  "mandt",
+  "spras"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "matkl",
+  "wgbez",
+  "wgbez60",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Material Group Descriptions",
+  column_descriptions: {
+  "mandt": "Client (Mandant)",
+  "matkl": "Material Group",
+  "spras": "Language Key",
+  "wgbez": "Material Group Desc.",
+  "wgbez60": "Material grp desc. 2"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "t023t")
+})}

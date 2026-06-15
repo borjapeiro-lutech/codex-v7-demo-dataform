@@ -1,0 +1,60 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "t023",
+  tags: ["sap", "common", "configuration", "once"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "matkl",
+  "mandt"
+],
+  columns: [
+  "mandt",
+  "matkl",
+  "spart",
+  "lref3",
+  "wwgda",
+  "wwgpa",
+  "abtnr",
+  "begru",
+  "gewei",
+  "j_1bnbm",
+  "bklas",
+  "ekwsl",
+  "anlkl",
+  "last_changed_at",
+  "def_schdsc",
+  "price_group",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Material Groups",
+  column_descriptions: {
+  "abtnr": "Department",
+  "anlkl": "Asset Class",
+  "begru": "Authorization Group",
+  "bklas": "Valuation Class",
+  "def_schdsc": "Scenario",
+  "ekwsl": "Purchasing value key",
+  "gewei": "Default unit of wt",
+  "j_1bnbm": "NCM Code",
+  "lref3": "Logist.reference",
+  "mandt": "Client (Mandant)",
+  "matkl": "Material Group",
+  "price_group": "Price Level Group",
+  "spart": "Division",
+  "wwgda": "MG ref. material",
+  "wwgpa": "MG material"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "t023")
+})}

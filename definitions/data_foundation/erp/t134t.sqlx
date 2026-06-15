@@ -1,0 +1,38 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "t134t",
+  tags: ["sap", "common", "configuration", "once"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "mandt",
+  "mtart",
+  "spras"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "mtart",
+  "mtbez",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Material Type Descriptions",
+  column_descriptions: {
+  "mandt": "Client (Mandant)",
+  "mtart": "Material Type",
+  "mtbez": "Material type descr.",
+  "spras": "Language Key"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "t134t")
+})}

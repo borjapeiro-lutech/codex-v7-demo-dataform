@@ -1,0 +1,38 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "tvlst",
+  tags: ["sap", "common", "configuration", "yearly"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "lifsp",
+  "mandt",
+  "spras"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "lifsp",
+  "vtext",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Deliveries: Blocking Reasons/Scope: Texts",
+  column_descriptions: {
+  "lifsp": "Delivery block",
+  "mandt": "Client (Mandant)",
+  "spras": "Language Key",
+  "vtext": "Delivery block desc."
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "tvlst")
+})}

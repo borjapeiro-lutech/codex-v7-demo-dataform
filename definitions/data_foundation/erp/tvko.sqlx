@@ -1,0 +1,83 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "tvko",
+  tags: ["sap", "common", "configuration", "yearly"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "vkorg",
+  "mandt"
+],
+  columns: [
+  "mandt",
+  "vkorg",
+  "waers",
+  "bukrs",
+  "adrnr",
+  "txnam_adr",
+  "txnam_kop",
+  "txnam_fus",
+  "txnam_gru",
+  "vkoau",
+  "kunnr",
+  "boavo",
+  "vkokl",
+  "ekorg",
+  "ekgrp",
+  "lifnr",
+  "werks",
+  "bsart",
+  "bstyp",
+  "bwart",
+  "lgort",
+  "txnam_sdb",
+  "mwskz",
+  "xstceg",
+  "j_1anutime",
+  "maxbi",
+  "hide",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Organizational Unit: Sales Organizations",
+  column_descriptions: {
+  "adrnr": "Address",
+  "boavo": "Rebate proc.active",
+  "bsart": "Order Type",
+  "bstyp": "Purch. doc. category",
+  "bukrs": "Company code",
+  "bwart": "Movement Type",
+  "ekgrp": "Purchasing Group",
+  "ekorg": "Purch. Organization",
+  "hide": "Hide Value in Input Help",
+  "j_1anutime": "Numbering time",
+  "kunnr": "Cust.inter-co.bill.",
+  "lgort": "Storage Location",
+  "lifnr": "Vendor",
+  "mandt": "Client (Mandant)",
+  "maxbi": "Max. no. bill. items",
+  "mwskz": "Tax code for SD doc.",
+  "txnam_adr": "Address text name",
+  "txnam_fus": "Footer lines text",
+  "txnam_gru": "Greeting text name",
+  "txnam_kop": "Letter header text",
+  "txnam_sdb": "Text SDS sender",
+  "vkoau": "RefSorg.SalesDocType",
+  "vkokl": "Sales org.calendar",
+  "vkorg": "Sales Organization",
+  "waers": "Statistics currency",
+  "werks": "Plant",
+  "xstceg": "Tax number"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "tvko")
+})}

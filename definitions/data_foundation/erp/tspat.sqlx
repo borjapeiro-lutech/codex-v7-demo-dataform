@@ -1,0 +1,38 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "tspat",
+  tags: ["sap", "common", "configuration", "yearly"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "mandt",
+  "spras",
+  "spart"
+],
+  columns: [
+  "mandt",
+  "spras",
+  "spart",
+  "vtext",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Organizational Unit: Sales Divisions: Texts",
+  column_descriptions: {
+  "mandt": "Client (Mandant)",
+  "spart": "Division",
+  "spras": "Language Key",
+  "vtext": "Name"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "tspat")
+})}

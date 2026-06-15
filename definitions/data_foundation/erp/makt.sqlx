@@ -1,0 +1,45 @@
+config {
+  type: "operations",
+  hasOutput: true,
+  database: config.foundation.erp.targetProjectId,
+  schema: config.foundation.erp.targetDatasetId,
+  name: "makt",
+  tags: ["sap", "common", "masterdata", "material", "daily"]
+}
+
+js {
+  const sap_cdc = require("includes/cortex/sap_cdc.js");
+}
+
+${sap_cdc.generateIncrementalMergeScript(ctx, {
+  keys: [
+  "matnr",
+  "mandt",
+  "spras"
+],
+  columns: [
+  "mandt",
+  "matnr",
+  "spras",
+  "maktx",
+  "maktg",
+  "operation_flag",
+  "is_deleted",
+  "recordstamp"
+],
+  table_description: "Material Descriptions",
+  column_descriptions: {
+  "maktg": "Material description",
+  "maktx": "Material Description",
+  "mandt": "Client (Mandant)",
+  "matnr": "Material",
+  "spras": "Language Key"
+},
+  target_ref: self(),
+  source_ref: ref(config.foundation.erp.sourceDatasetId, "makt")
+  , cluster: {
+  "columns": [
+    "spras"
+  ]
+}
+})}
